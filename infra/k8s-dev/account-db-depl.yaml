@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micro-account-db-depl
+spec:
+  selector:
+    matchLabels:
+      app: micro-account-db
+  template:
+    metadata:
+      labels:
+        app: micro-account-db
+    spec:
+      volumes:
+        - name: micro-account-db-storage
+          persistentVolumeClaim:
+            claimName: micro-account-db-pvc
+      containers:
+        - name: micro-account-db-cont
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: micro-account-db-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-user
+                  key: POSTGRES_USER
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-password
+                  key: POSTGRES_PASSWORD
+
+            - name: POSTGRES_DB
+              value: accoundb
+
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: trust
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micro-account-db-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: micro-account-db
+  ports:
+    - name: micro-account-db-port
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: micro-account-db-pvc
+spec:
+  resources:
+    requests:
+      storage: "500Mi"
+  accessModes:
+    - ReadWriteOnce

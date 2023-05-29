@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micro-account-depl
+spec:
+  selector:
+    matchLabels:
+      app: micro-account
+  template:
+    metadata:
+      labels:
+        app: micro-account
+    spec:
+      containers:
+        - name: micro-account-cont
+          image: faridmansimli/micro-account
+          ports:
+            - containerPort: 4001
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+          env:
+            - name: APP_NAME
+              value: micro-account
+
+            - name: NODE_ENV
+              value: Development
+
+            - name: POSTGRES_URL
+              value: micro-account-db-srv
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
+
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-user
+                  key: POSTGRES_USER
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-password
+                  key: POSTGRES_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micro-account-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: micro-account
+  ports:
+    - name: micro-account-port
+      protocol: TCP
+      port: 4001
+      targetPort: 4001

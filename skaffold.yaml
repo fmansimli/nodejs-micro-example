@@ -1,0 +1,27 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: nodejs-micro-example
+build:
+  local:
+    push: false
+  artifacts:
+    - image: faridmansimli/micro-account
+      context: account
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: src/**/*.ts
+            dest: .
+    - image: faridmansimli/micro-auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: src/**/*.ts
+            dest: .
+manifests:
+  rawYaml:
+    - infra/k8s-dev/*

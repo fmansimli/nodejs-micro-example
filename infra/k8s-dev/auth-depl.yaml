@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micro-auth-depl
+spec:
+  selector:
+    matchLabels:
+      app: micro-auth
+  template:
+    metadata:
+      labels:
+        app: micro-auth
+    spec:
+      containers:
+        - name: micro-auth-cont
+          image: faridmansimli/micro-auth
+          ports:
+            - containerPort: 4002
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
+
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-user
+                  key: MONGO_USER
+
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-password
+                  key: MONGO_PASSWORD
+
+            - name: MONGO_DB
+              value: authdb
+            - name: MONGO_URL
+              value: micro-auth-db-srv
+            - name: NODE_ENV
+              value: Development
+            - name: APP_NAME
+              value: micro-auth
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micro-auth-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: micro-auth
+  ports:
+    - name: micro-auth-port
+      protocol: TCP
+      port: 4002
+      targetPort: 4002

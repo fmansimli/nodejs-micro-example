@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micro-auth-depl
+spec:
+  selector:
+    matchLabels:
+      app: micro-auth
+  template:
+    metadata:
+      labels:
+        app: micro-auth
+    spec:
+      containers:
+        - name: micro-auth-cont
+          image: mongo
+          ports:
+            - containerPort: 27017
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-user
+                  key: MONGO_USER
+
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-password
+                  key: MONGO_PASSWORD
+
+            - name: MONGO_INITDB_DATABASE
+              value: authdb
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micro-auth-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: micro-auth-db
+  ports:
+    - name: micro-auth-db-port
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: micro-auth-db-pvc
+spec:
+  resources:
+    requests:
+      storage: "500Mi"
+  accessModes:
+    - ReadWriteOnce
