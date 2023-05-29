@@ -4,7 +4,7 @@
   "description": "auth module for micro-app",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts"
+    "dev": "nodemon src/index.ts"
   },
   "dependencies": {
     "class-transformer": "^0.5.1",
@@ -17,12 +17,6 @@
     "mongoose": "^7.2.1",
     "morgan": "^1.10.0"
   },
-  "keywords": [
-    "ts",
-    "js"
-  ],
-  "author": "Farid Mansimli",
-  "license": "ISC",
   "devDependencies": {
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
@@ -33,6 +27,13 @@
     "@typescript-eslint/parser": "^5.59.7",
     "eslint": "^8.41.0",
     "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
-  }
+  },
+  "keywords": [
+    "ts",
+    "js"
+  ],
+  "author": "Farid Mansimli",
+  "license": "ISC"
 }
