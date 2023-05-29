@@ -47,6 +47,8 @@ spec:
               value: Development
             - name: APP_NAME
               value: micro-auth
+            - name: APP_HOST
+              value: micro-auth-srv
 
 ---
 apiVersion: v1

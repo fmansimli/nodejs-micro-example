@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: micro-auth-depl
+  name: micro-auth-db-depl
 spec:
   selector:
     matchLabels:
-      app: micro-auth
+      app: micro-auth-db
   template:
     metadata:
       labels:
-        app: micro-auth
+        app: micro-auth-db
     spec:
       containers:
-        - name: micro-auth-cont
+        - name: micro-auth-db-cont
           image: mongo
           ports:
             - containerPort: 27017
@@ -40,7 +40,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: micro-auth-srv
+  name: micro-auth-db-srv
 spec:
   type: ClusterIP
   selector:

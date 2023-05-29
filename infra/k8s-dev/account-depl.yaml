@@ -24,6 +24,9 @@ spec:
             - name: APP_NAME
               value: micro-account
 
+            - name: APP_HOST
+              value: micro-account-srv
+
             - name: NODE_ENV
               value: Development
 
