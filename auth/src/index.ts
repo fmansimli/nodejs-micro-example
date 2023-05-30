@@ -3,7 +3,7 @@ import app from "./app";
 
 const httpServer = http.createServer(app);
 
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4002;
 const APP_HOST = process.env.APP_HOST;
 
 const bootstrap = async () => {

@@ -3,7 +3,7 @@ import { RequestHandler } from "express";
 export const signIn: RequestHandler = (req, res, next) => {
   try {
     res.status(200).json({
-      user: req.boby,
+      user: req.body,
       meta: {
         url: req.originalUrl,
         method: req.method,
@@ -19,7 +19,7 @@ export const signIn: RequestHandler = (req, res, next) => {
 export const signUp: RequestHandler = (req, res, next) => {
   try {
     res.status(200).json({
-      user: req.boby,
+      user: req.body,
       meta: {
         url: req.originalUrl,
         method: req.method,
