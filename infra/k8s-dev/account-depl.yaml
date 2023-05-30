@@ -28,7 +28,7 @@ spec:
               value: micro-account-srv
 
             - name: NODE_ENV
-              value: Development
+              value: development
 
             - name: POSTGRES_URL
               value: micro-account-db-srv

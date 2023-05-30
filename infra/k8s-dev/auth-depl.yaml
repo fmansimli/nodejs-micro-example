@@ -44,7 +44,7 @@ spec:
             - name: MONGO_URL
               value: micro-auth-db-srv
             - name: NODE_ENV
-              value: Development
+              value: development
             - name: APP_NAME
               value: micro-auth
             - name: APP_HOST

@@ -9,6 +9,7 @@ export const signIn: RequestHandler = (req, res, next) => {
         method: req.method,
         env: process.env.NODE_ENV,
         appName: process.env.APP_NAME,
+        ip: req.ip,
       },
     });
   } catch (error) {
@@ -25,6 +26,7 @@ export const signUp: RequestHandler = (req, res, next) => {
         method: req.method,
         env: process.env.NODE_ENV,
         appName: process.env.APP_NAME,
+        ip: req.ip,
       },
     });
   } catch (error) {
