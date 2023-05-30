@@ -4,7 +4,7 @@ export const getProfile: RequestHandler = (req, res, next) => {
   try {
     res.status(200).json({
       user: {
-        id: req.params.id,
+        id: req.ip,
       },
       meta: {
         url: req.originalUrl,
