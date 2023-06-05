@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: micro-account-depl
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: micro-account
@@ -26,6 +27,9 @@ spec:
 
             - name: APP_HOST
               value: micro-account-srv
+
+            - name: PORT
+              value: "4001"
 
             - name: NODE_ENV
               value: development

@@ -3,10 +3,14 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 
+import { AppConfig } from "./config";
+
 import router from "./routes";
 import { catch404, catchError } from "./middlewares/error";
 
 const app = express();
+
+AppConfig.init();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

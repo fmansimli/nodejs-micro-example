@@ -1,12 +1,12 @@
 import { RequestHandler } from "express";
-import place from "src/models/place";
-import PLace, { IPlace } from "src/models/place";
+import { NotFoundError } from "../errors";
+import Place, { IPlace } from "../models/place";
 
 export const create: RequestHandler = async (req, res, next) => {
   const { type, name, desc } = req.body as IPlace;
 
   try {
-    const place = await PLace.create({ name, type, desc });
+    const place = await Place.create({ name, type, desc });
     res.status(201).json({
       place,
       meta: {
@@ -24,7 +24,7 @@ export const create: RequestHandler = async (req, res, next) => {
 
 export const getAll: RequestHandler = async (req, res, next) => {
   try {
-    const places = await place.find();
+    const places = await Place.find();
 
     res.status(200).json({
       places,
@@ -41,13 +41,18 @@ export const getAll: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getById: RequestHandler = (req, res, next) => {
+export const getById: RequestHandler = async (req, res, next) => {
   try {
+    const place = await Place.findById(req.params.id);
+
+    if (!place) {
+      throw new NotFoundError("Place not found!");
+    }
+
     res.status(200).json({
-      place: {
-        id: req.params.id,
-      },
+      place,
       meta: {
+        ip: req.ip,
         url: req.originalUrl,
         method: req.method,
         env: process.env.NODE_ENV,
@@ -59,13 +64,21 @@ export const getById: RequestHandler = (req, res, next) => {
   }
 };
 
-export const updateById: RequestHandler = (req, res, next) => {
+export const updateById: RequestHandler = async (req, res, next) => {
+  const id = req.params.id;
+  const attrs = req.body as IPlace;
+
   try {
+    const place = await Place.findByIdAndUpdate(id, { $set: attrs }, { new: true });
+
+    if (!place) {
+      throw new NotFoundError("Place not found!");
+    }
+
     res.status(200).json({
-      place: {
-        id: req.params.id,
-      },
+      place,
       meta: {
+        ip: req.ip,
         url: req.originalUrl,
         method: req.method,
         env: process.env.NODE_ENV,
@@ -77,13 +90,22 @@ export const updateById: RequestHandler = (req, res, next) => {
   }
 };
 
-export const deleteById: RequestHandler = (req, res, next) => {
+export const deleteById: RequestHandler = async (req, res, next) => {
+  const id = req.params.id;
+
   try {
+    const place = await Place.findByIdAndDelete(id);
+
+    if (!place) {
+      throw new NotFoundError("Place not found!");
+    }
+
     res.status(200).json({
       place: {
         id: req.params.id,
       },
       meta: {
+        ip: req.ip,
         url: req.originalUrl,
         method: req.method,
         env: process.env.NODE_ENV,

@@ -1,41 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: micro-auth-db-depl
+  name: micro-places-db-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: micro-auth-db
+      app: micro-places-db
   template:
     metadata:
       labels:
-        app: micro-auth-db
+        app: micro-places-db
     spec:
       volumes:
-        - name: micro-auth-db-storage
+        - name: micro-places-db-storage
           persistentVolumeClaim:
-            claimName: micro-auth-db-pvc
-
+            claimName: micro-places-db-pvc
       containers:
-        - name: micro-auth-db-cont
+        - name: micro-places-db-cont
           image: mongo
           ports:
             - containerPort: 27017
+          volumeMounts:
+            - name: micro-places-db-storage
+              mountPath: /data/db
+
           resources:
             limits:
               cpu: "500m"
               memory: "128Mi"
-          volumeMounts:
-            - name: micro-auth-db-storage
-              mountPath: /data/db
           env:
-            - name: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_USER
               valueFrom:
                 secretKeyRef:
                   name: mongo-user
                   key: MONGO_USER
-
+            
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -44,18 +44,17 @@ spec:
 
             - name: MONGO_INITDB_DATABASE
               value: authdb
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: micro-auth-db-srv
+  name: micro-places-db-srv
 spec:
   type: ClusterIP
   selector:
-    app: micro-auth-db
+    app:  micro-places-db
   ports:
-    - name: micro-auth-db-port
+    - name: micro-places-db-port
       protocol: TCP
       port: 27017
       targetPort: 27017
@@ -64,10 +63,11 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: micro-auth-db-pvc
+  name: micro-places-db-pvc
 spec:
   resources:
     requests:
       storage: "500Mi"
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce

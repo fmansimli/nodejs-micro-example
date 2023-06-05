@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micro-places-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: micro-places
+  template:
+    metadata:
+      labels:
+        app: micro-places
+    spec:
+      containers:
+        - name: micro-places-cont
+          image: faridmansimli/micro-places
+          ports:
+            - containerPort: 4004
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+          env:
+            - name: APP_NAME
+              value: micro-places
+
+            - name: NODE_ENV
+              value: development
+
+            - name: APP_HOST
+              value: micro-places-srv
+
+            - name: PORT
+              value: "4004"
+
+            - name: MONGO_HOST
+              value: micro-places-db-srv
+
+            - name: MONGO_PORT
+              value: "27017"
+            
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
+            
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-password
+                  key: MONGO_PASSWORD
+
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-user
+                  key: MONGO_USER
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micro-places-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: micro-places
+  ports:
+    - name: micro-places-port
+      protocol: TCP
+      port: 4004
+      targetPort: 4004

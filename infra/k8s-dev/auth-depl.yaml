@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: micro-auth-depl
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: micro-auth
@@ -49,6 +50,8 @@ spec:
               value: micro-auth
             - name: APP_HOST
               value: micro-auth-srv
+            - name: PORT
+              value: "4002"
 
 ---
 apiVersion: v1

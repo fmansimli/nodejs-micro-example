@@ -19,9 +19,10 @@ const bootstrap = async () => {
     await AppMongo.connect();
 
     httpServer.listen(PORT, () => {
-      Logger.log(`** listening on ${APP_HOST} (${APP_NAME})`);
+      Logger.log(`** listening on ${APP_HOST}:${PORT} (${APP_NAME})`);
     });
   } catch (error) {
+    Logger.error(error);
     process.exit(1);
   }
 };
