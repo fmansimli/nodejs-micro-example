@@ -1,5 +1,7 @@
 import { RequestHandler } from "express";
 import { NotFoundError } from "../errors";
+import { Meta } from "../utils";
+
 import Place, { IPlace } from "../models/place";
 
 export const create: RequestHandler = async (req, res, next) => {
@@ -9,13 +11,7 @@ export const create: RequestHandler = async (req, res, next) => {
     const place = await Place.create({ name, type, desc });
     res.status(201).json({
       place,
-      meta: {
-        url: req.originalUrl,
-        method: req.method,
-        ip: req.ip,
-        env: process.env.NODE_ENV,
-        appName: process.env.APP_NAME,
-      },
+      meta: Meta.build(req),
     });
   } catch (error) {
     next(error);
@@ -28,13 +24,7 @@ export const getAll: RequestHandler = async (req, res, next) => {
 
     res.status(200).json({
       places,
-      meta: {
-        ip: req.ip,
-        url: req.originalUrl,
-        method: req.method,
-        env: process.env.NODE_ENV,
-        appName: process.env.APP_NAME,
-      },
+      meta: Meta.build(req),
     });
   } catch (error) {
     next(error);
@@ -51,13 +41,7 @@ export const getById: RequestHandler = async (req, res, next) => {
 
     res.status(200).json({
       place,
-      meta: {
-        ip: req.ip,
-        url: req.originalUrl,
-        method: req.method,
-        env: process.env.NODE_ENV,
-        appName: process.env.APP_NAME,
-      },
+      meta: Meta.build(req),
     });
   } catch (error) {
     next(error);
@@ -77,13 +61,7 @@ export const updateById: RequestHandler = async (req, res, next) => {
 
     res.status(200).json({
       place,
-      meta: {
-        ip: req.ip,
-        url: req.originalUrl,
-        method: req.method,
-        env: process.env.NODE_ENV,
-        appName: process.env.APP_NAME,
-      },
+      meta: Meta.build(req),
     });
   } catch (error) {
     next(error);
@@ -104,13 +82,7 @@ export const deleteById: RequestHandler = async (req, res, next) => {
       place: {
         id: req.params.id,
       },
-      meta: {
-        ip: req.ip,
-        url: req.originalUrl,
-        method: req.method,
-        env: process.env.NODE_ENV,
-        appName: process.env.APP_NAME,
-      },
+      meta: Meta.build(req),
     });
   } catch (error) {
     next(error);

@@ -17,11 +17,17 @@ export const catchError: ErrorRequestHandler = (err, req, res, next) => {
     if (err instanceof CustomError) {
       return res.status(err.httpCode).json(err.serialize());
     }
-    res.status(500).json({ httpCode: 500, message: "something went wrong" });
+    res.status(500).json({
+      httpCode: 500,
+      message: "something went wrong",
+      errors: err,
+    });
   } catch (error) {
     res.status(500).json({
       httpCode: 500,
-      message: "unkown error",
+      message: "unknown error",
     });
+  } finally {
+    console.log(err);
   }
 };
