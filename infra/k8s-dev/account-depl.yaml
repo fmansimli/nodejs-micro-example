@@ -30,7 +30,7 @@ spec:
             - name: NODE_ENV
               value: development
 
-            - name: POSTGRES_URL
+            - name: POSTGRES_HOST
               value: micro-account-db-srv
 
             - name: JWT_SECRET

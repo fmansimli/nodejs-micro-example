@@ -1,18 +1,25 @@
 import http from "http";
 import app from "./app";
 
+import { Logger } from "./services";
+
 const httpServer = http.createServer(app);
 
 const PORT = process.env.PORT || 4001;
 const APP_HOST = process.env.APP_HOST;
+const APP_NAME = process.env.APP_NAME;
+
+if (!process.env.POSTGRES_HOST) {
+  throw new Error("POSTGRES_HOST must be defined");
+}
 
 const bootstrap = async () => {
   try {
     httpServer.listen(PORT, () => {
-      console.log(`** listening on http://${APP_HOST}`);
+      Logger.log(`** listening on ${APP_HOST} (${APP_NAME})`);
     });
-  } catch (error: any) {
-    console.error(`$$ error=> ${error.message}`);
+  } catch (error) {
+    process.exit(1);
   }
 };
 
