@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kinf: Deployment
+metadata:
+  name: micro-kafka-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: micro-kafka
+  template:
+    metadata:
+      labels:
+        app: micro-kafka
+    spec:
+      volumes:
+        - name: micro-kafka-storage
+          persistentVolumeClaim:
+            claimName: micro-kafka-pvc
+      containers:
+        - name: micro-kafka-cont
+          image: bitnami/kafka
+          ports:
+            - containerPort: 9092
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+          volumeMounts:
+            - name: micro-kafka-storage
+              mountPath: /bitnami
+          env:
+            - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+              value: micro-zookeeper-srv:2181
+
+            - name: ALLOW_PLAINTEXT_LISTENER
+              value: yes
+            
+            - name: KAFKA_BROKER_ID
+              value: 1
+
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              value: PLAINTEXT://127.0.0.1:9092
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micro-kafka-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: micro-kafka
+  ports:
+    - name: micro-kafka-port
+      protocol: TCP
+      port: 9092
+      targetPort: 9092
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: micro-kafka-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  
+  resources:
+    requests:
+      storage: 500Mi
+
+  volumeMode: Filesystem
+  
+
+            
+
+          
