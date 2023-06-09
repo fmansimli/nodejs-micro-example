@@ -17,29 +17,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      AWS_REGION: eu-central-1
+      ECR_REPOSITORY: sp-repo
     steps:
       - name: Get code
         uses: actions/checkout@v3
 
-      - name: Login to Docker hub
-        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-
-      - name: Build docker image
-        run: cd auth && docker build -t faridmansimli/micro-auth .
-      
-      - name: Push the image to Docker hub
-        run: cd auth && docker push faridmansimli/micro-auth
-
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          token: $DIGITALOCEAN_ACCESS_TOKEN
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
       
-      - name: Save DigitalOcean kubeconfig
-        run: doctl kubernetes cluster kubeconfig save moove-cluster
+      - name: Save AWS kubeconfig
+        run: eksctl kubernetes cluster kubeconfig save moove-cluster
 
       - name: Restart the auth deployment (auth-depl.yaml)
         run: kubectl rollout restart deployment auth-depl
