@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kinf: Deployment
+kind: Deployment
 metadata:
   name: micro-kafka-depl
 spec:
@@ -33,10 +33,10 @@ spec:
               value: micro-zookeeper-srv:2181
 
             - name: ALLOW_PLAINTEXT_LISTENER
-              value: yes
+              value: "yes"
             
             - name: KAFKA_BROKER_ID
-              value: 1
+              value: "1"
 
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
               value: PLAINTEXT://127.0.0.1:9092
@@ -67,10 +67,7 @@ spec:
   
   resources:
     requests:
-      storage: 500Mi
-
-  volumeMode: Filesystem
-  
+      storage: 500Mi  
 
             
 

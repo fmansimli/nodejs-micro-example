@@ -3,6 +3,9 @@ kind: Config
 metadata:
   name: nodejs-micro-example
 build:
+  platforms:
+    - "linux/amd64"
+    - "linux/arm64"
   local:
     push: false
   artifacts:

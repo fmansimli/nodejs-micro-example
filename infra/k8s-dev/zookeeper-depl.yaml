@@ -30,7 +30,7 @@ spec:
               mountPath: /bitnami
           env:
             - name: ALLOW_ANONYMOUS_LOGIN
-              value: yes
+              value: "yes"
             
             - name: ZOO_MY_ID
               valueFrom:
@@ -63,4 +63,3 @@ spec:
       storage: 500Mi
   accessModes:
     - ReadWriteOnce
-  volumeMode: Filesystem
