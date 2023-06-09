@@ -27,3 +27,11 @@ spec:
                 name: micro-auth-srv
                 port:
                   number: 4002
+
+          - path: "/api/places/?(.*)"
+            pathType: Prefix
+            backend:
+              service:
+                name: micro-places-srv
+                port:
+                  number: 4004

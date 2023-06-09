@@ -14,8 +14,18 @@ build:
         manual:
           - src: src/**/*.ts
             dest: .
+    
     - image: faridmansimli/micro-auth
       context: auth
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: src/**/*.ts
+            dest: .
+    
+    - image: faridmansimli/micro-places
+      context: places
       docker:
         dockerfile: Dockerfile.dev
       sync:
