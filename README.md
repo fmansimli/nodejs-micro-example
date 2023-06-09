@@ -1,6 +1,5 @@
 # nodejs-micro-example
 
-
 ~/.aws/credentials
 
 ```text
