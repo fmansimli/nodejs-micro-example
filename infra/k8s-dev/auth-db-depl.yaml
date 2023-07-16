@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: micro-auth-db-depl
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: micro-auth-db
@@ -11,6 +12,11 @@ spec:
       labels:
         app: micro-auth-db
     spec:
+      volumes:
+        - name: micro-auth-db-storage
+          persistentVolumeClaim:
+            claimName: micro-auth-db-pvc
+
       containers:
         - name: micro-auth-db-cont
           image: mongo
@@ -20,6 +26,9 @@ spec:
             limits:
               cpu: "500m"
               memory: "128Mi"
+          volumeMounts:
+            - name: micro-auth-db-storage
+              mountPath: /data/db
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:

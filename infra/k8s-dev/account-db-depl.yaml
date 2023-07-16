@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: micro-account-db-depl
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: micro-account-db

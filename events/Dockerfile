@@ -15,6 +15,5 @@ COPY package*.json ./
 
 RUN npm install --omit=dev
 
-EXPOSE 4001
+EXPOSE 4003
 CMD ["npm","start"]
-
